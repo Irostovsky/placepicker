@@ -30,7 +30,7 @@ export async function fetchUserPlaces() {
 
   const respData = await response.json();
   if (!response.ok) {
-    throw new Error("Error fetching places");
+    throw new Error("Error fetching user places");
   }
 
   return respData.places;

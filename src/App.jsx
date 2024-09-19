@@ -14,6 +14,8 @@ function App() {
   const [userPlaces, setUserPlaces] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState();
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState();
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -26,11 +28,15 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
+      setIsFetching(true);
+
       try {
-        const places = await fetchUserPlaces();
-        setUserPlaces(places);
+        const userPlaces = await fetchUserPlaces();
+        setUserPlaces(userPlaces);
+        setIsFetching(false);
       } catch (error) {
-        console.log(error); // TBC
+        setError(error);
+        setIsFetching(false);
       }
     }
 
@@ -83,6 +89,10 @@ function App() {
   function handleError() {
     setErrorUpdatingPlaces(null);
   }
+
+  if (error) {
+    return <Error title="An error occured!" message={error.message} />;
+  }
   return (
     <>
       <Modal open={errorUpdatingPlaces} onClose={handleError}>
@@ -112,6 +122,8 @@ function App() {
       <main>
         <Places
           title="I'd like to visit ..."
+          isLoading={isFetching}
+          loadingText="Fetching user place data..."
           fallbackText="Select the places you would like to visit below."
           places={userPlaces}
           onSelectPlace={handleStartRemovePlace}
