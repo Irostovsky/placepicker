@@ -33,11 +33,10 @@ function App() {
       try {
         const userPlaces = await fetchUserPlaces();
         setUserPlaces(userPlaces);
-        setIsFetching(false);
       } catch (error) {
-        setError(error);
-        setIsFetching(false);
+        setError({ message: error.message || "Failed to load user places" });
       }
+      setIsFetching(false);
     }
 
     fetchData();
@@ -90,9 +89,6 @@ function App() {
     setErrorUpdatingPlaces(null);
   }
 
-  if (error) {
-    return <Error title="An error occured!" message={error.message} />;
-  }
   return (
     <>
       <Modal open={errorUpdatingPlaces} onClose={handleError}>
@@ -120,14 +116,17 @@ function App() {
         </p>
       </header>
       <main>
-        <Places
-          title="I'd like to visit ..."
-          isLoading={isFetching}
-          loadingText="Fetching user place data..."
-          fallbackText="Select the places you would like to visit below."
-          places={userPlaces}
-          onSelectPlace={handleStartRemovePlace}
-        />
+        {error && <Error title="An error occured!" message={error.message} />}
+        {!error && (
+          <Places
+            title="I'd like to visit ..."
+            isLoading={isFetching}
+            loadingText="Fetching your places..."
+            fallbackText="Select the places you would like to visit below."
+            places={userPlaces}
+            onSelectPlace={handleStartRemovePlace}
+          />
+        )}
 
         <AvailablePlaces onSelectPlace={handleSelectPlace} />
       </main>
