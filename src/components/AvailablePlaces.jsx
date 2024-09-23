@@ -22,7 +22,6 @@ export default function AvailablePlaces({ onSelectPlace }) {
     isFetching,
     error,
     fetchedData: availablePlaces,
-    setFetchedData: setAvailablePlaces,
   } = useFetch(fetchSortedPlaces, []);
 
   if (error) {
